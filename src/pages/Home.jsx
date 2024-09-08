@@ -1,18 +1,28 @@
+// Home.js
+
 import React, { useEffect, useState } from "react";
-import { Carousel } from "react-responsive-carousel"; // Correct position for Carousel import
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Ensure CSS import comes after component imports
-import { Link } from "react-router-dom";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Link, useParams } from "react-router-dom";
 import MovieList from "../components/MovieList";
+import { fetchMovies } from "../utils/fetchMovies"; // Adjust the path according to your file structure
 
 const Home = () => {
   const [popularMovies, setPopularMovies] = useState([]);
+  // const { type } = useParams();
 
   useEffect(() => {
-    fetch(
-      "https://api.themoviedb.org/3/movie/popular?api_key=4e44d9029b1270a757cddc766a1bcb63&language=en-US"
-    )
-      .then((res) => res.json())
-      .then((data) => setPopularMovies(data.results));
+    // Fetch popular movies using the utility function
+    const getPopularMovies = async () => {
+      try {
+        const movies = await fetchMovies("popular");
+        setPopularMovies(movies);
+      } catch (error) {
+        console.error("Failed to fetch popular movies:", error);
+      }
+    };
+
+    getPopularMovies();
   }, []);
 
   return (
